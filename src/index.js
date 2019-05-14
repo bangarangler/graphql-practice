@@ -44,12 +44,32 @@ const posts = [
   }
 ];
 
+const comments = [
+  {
+    id: "1",
+    text: "here is first comment"
+  },
+  {
+    id: "1",
+    text: "here is second comment"
+  },
+  {
+    id: "2",
+    text: "here is third comment"
+  },
+  {
+    id: "3",
+    text: "here is fourth comment"
+  }
+];
+
 //SCALAR TYPE = STRING, BOOLEAN, INT, FLOAT, ID
 //TYPE DEFINITIONS (SCHEMA)
 const typeDefs = `
 type Query {
-users(query: String): [User!]!
-posts(query: String): [Post!]!
+  users(query: String): [User!]!
+  posts(query: String): [Post!]!
+  comments: [Comment!]!
   me: User!
   post: Post!
 }
@@ -59,6 +79,7 @@ type User {
   name: String!
   email: String!
   age: Int
+  posts: [Post]!
 }
 
 type Post {
@@ -67,6 +88,11 @@ type Post {
   body: String!
   published: Boolean!
   author: User!
+}
+
+type Comment {
+  id: ID!
+  text: String!
 }
 `;
 
@@ -113,12 +139,22 @@ const resolvers = {
         title: "Developer Post Title",
         body: "The body of the post would be displayed here"
       };
+    },
+    comments(parent, args, ctx, info) {
+      return comments;
     }
   },
   Post: {
     author(parent, args, ctx, info) {
       return users.find(user => {
         return user.id === parent.author;
+      });
+    }
+  },
+  User: {
+    posts(parent, args, ctx, info) {
+      return posts.filter(post => {
+        return post.author === parent.id;
       });
     }
   }
