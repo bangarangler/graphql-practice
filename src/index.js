@@ -25,19 +25,22 @@ const posts = [
     id: "75840",
     title: "Post One",
     body: "The body of post one",
-    published: true
+    published: true,
+    author: "1"
   },
   {
     id: "92894a",
     title: "Post two",
     body: "The body of second post z",
-    published: false
+    published: false,
+    author: "1"
   },
   {
     id: "24234232",
     title: "Post three",
     body: "The body of post three",
-    published: true
+    published: true,
+    author: "2"
   }
 ];
 
@@ -63,6 +66,7 @@ type Post {
   title: String!
   body: String!
   published: Boolean!
+  author: User!
 }
 `;
 
@@ -109,6 +113,13 @@ const resolvers = {
         title: "Developer Post Title",
         body: "The body of the post would be displayed here"
       };
+    }
+  },
+  Post: {
+    author(parent, args, ctx, info) {
+      return users.find(user => {
+        return user.id === parent.author;
+      });
     }
   }
 };
